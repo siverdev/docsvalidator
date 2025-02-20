@@ -13,7 +13,7 @@ const ResultsList = ({ results }) => {
                         item.status === "correct" ? "bg-green-200" : "bg-red-200"
                     }`}
                 >
-                    {item.title} — {item.status === "correct" ? "✅ Правильно" : "❌ Помилка"}
+                    {item.title} — {item.result} {item.status === "correct" ? "✅" : "❌"}
                 </div>
             ))}
         </div>

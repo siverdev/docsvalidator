@@ -23,12 +23,13 @@ const FileUpload = ({ onCheckComplete }) => {
       formData.append("file", file);
 
       try {
-          const response = await axios.post("http://localhost:3000/upload", formData, {
+          const response = await axios.post("http://localhost:3000/validate", formData, {
               headers: { "Content-Type": "multipart/form-data" },
           });
 
-          onCheckComplete(response.data.results);
           console.log(response.data)
+          onCheckComplete(response.data.validationResults);
+         
       } catch (err) {
           setError("Не вдалося перевірити файл.");
       }

@@ -1,23 +1,25 @@
 import { useState, useEffect } from "react";
 import FileUpload from "../components/FileUpload";
 import ResultsList from "../components/ResultsList";
+import axios from "axios";
 
 const CheckJournal = () => {
   const [checkResults, setCheckResults] = useState(null);
   const [checklist, setChecklist] = useState([]);
+  const [checklistError, setChecklistError] = useState(false);
 
   useEffect(() => {
-    setChecklist([
-        { "id": 1, "title": "Назва університету", "regex": "Київський національний університет імені Тараса Шевченка" },
-        { "id": 2, "title": "Факультет", "regex": "Факультет комп’ютерних наук та кібернетики" },
-        { "id": 3, "title": "Кафедра", "regex": "Кафедра теорії та технології програмування" }
-    ]
-    )
-    // Завантаження чекліста з сервера
-    // fetch("/journal-checklist")
-    //   .then((res) => res.json())
-    //   .then((data) => setChecklist(data.checklist))
-    //   .catch((error) => console.error("Помилка завантаження чекліста:", error));
+    const fetchData = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/journal-checklist");
+        if (!res.data.checklist) setChecklistError(true);
+        setChecklist(res.data.checklist);
+      } catch (error) {
+        setChecklistError(false);
+      }
+    }
+
+    fetchData();
   }, []);
 
   return (
@@ -28,11 +30,17 @@ const CheckJournal = () => {
       {/* Критерії оцінки */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold mb-2">Критерії перевірки:</h2>
-        <ul className="list-disc pl-5">
-          {checklist.map((item) => (
-            <li key={item.id} className="mb-1">{item.title}</li>
-          ))}
-        </ul>
+        {checklistError ? (
+          <div className="text-red-500">Помилка при завантаженні чекліста</div>
+        ) : (
+          <ul className="list-disc pl-5">
+            {checklist.map((item) => (
+              <li key={item.id} className="mb-1">
+                {item.title}: {item.description}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* Форма завантаження файлу */}
