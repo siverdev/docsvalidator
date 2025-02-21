@@ -25,7 +25,7 @@ const CheckJournal = () => {
   return (
     <div className="ml-8 mt-2">
       {/* Назва сторінки */}
-      <h1 className="text-2xl font-bold mb-4">Перевірка щоденника звіту</h1>
+      <h1 className="text-2xl font-bold mb-4">Перевірка щоденника звіту для катедри ТТП ФКНК</h1>
 
       {/* Критерії оцінки */}
       <div className="mb-6">
