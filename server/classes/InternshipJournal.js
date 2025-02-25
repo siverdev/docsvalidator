@@ -1,5 +1,6 @@
 export default class InternshipJournal {
     constructor(text, ownerName) {
+      this.name = "Щоденник практики";
       this.text = text;
       this.ownerName = ownerName;
     }

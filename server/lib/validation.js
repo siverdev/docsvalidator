@@ -1,5 +1,6 @@
 import checklist from "../data/journal_checklist.json" with {type: "json"};
 import shevchenko from "shevchenko";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const validateJournal = async (journal, criteriaToCheck) => {
     let validationResults = checklist;
@@ -307,4 +308,37 @@ export const validateJournal = async (journal, criteriaToCheck) => {
     validationResults = validationResults.filter(item => criteriaToCheck.includes(item.id));
 
     return validationResults;
+}
+
+export const analyzeWithAI = async (journal, validationResults) => {
+    try {
+        const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+        const model = genAI.getGenerativeModel({model: "gemini-2.0-flash" });
+        const prompt = `
+        Ви — експерт з оцінки студентських звітів про проходження виробничої практики. Вам надано текст щоденника практики студента, а також результати автоматичної валідації.
+
+        1. Проаналізуйте текст щоденника на відповідність основним критеріям оцінювання (структура, зміст, оформлення, повнота інформації).  
+        2. Визначте основні недоліки та проблеми, які могли залишитися поза автоматичною валідацією.  
+        3. Запропонуйте рекомендації щодо покращення звіту, включаючи змістові та стилістичні покращення.  
+
+        **Текст щоденника практики:**  
+        ${journal.text}
+
+        **Результати автоматичної валідації:**  
+        ${JSON.stringify(validationResults, null, 2)}
+
+        Видайте висновок у структурованій формі:
+
+        1. **Загальна оцінка відповідності критеріям**
+        2. **Виявлені недоліки**
+        3. **Рекомендації щодо покращення**
+        `;
+
+        const result = await model.generateContent(prompt);
+        return result.response.text();
+
+    } catch (error) {
+        console.error(error);
+    }
+
 }

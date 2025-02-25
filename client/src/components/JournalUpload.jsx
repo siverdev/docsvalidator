@@ -50,15 +50,13 @@ const JournalUpload = ({ onCheckComplete, criteriaToCheck }) => {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("ownerName", formattedName);
-      console.log(criteriaToCheck)
       formData.append("criteriaToCheck", JSON.stringify(criteriaToCheck));
 
       try {
           const response = await axios.post("http://localhost:3000/validate", formData, {
               headers: { "Content-Type": "multipart/form-data" },
           });
-
-          onCheckComplete(response.data.validationResults);
+          onCheckComplete(response.data);
          
       } catch (err) {
           setError("Не вдалося перевірити файл.");

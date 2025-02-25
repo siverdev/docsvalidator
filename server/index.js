@@ -3,13 +3,12 @@ import express from "express";
 import mammoth from "mammoth";
 import multer from "multer";
 import cors from "cors";
-import dotenv from "dotenv";
+import dotenv from "dotenv"
 import path from "path";
 import fs from "fs";
 import checklist from "./data/journal_checklist.json" with {type: "json"};
 import InternshipJournal from "./classes/InternshipJournal.js";
-import { validateJournal } from "./lib/validation.js";
-
+import { analyzeWithAI, validateJournal } from "./lib/validation.js";
 
 // Configurations
 const app = express();  
@@ -59,11 +58,12 @@ app.post("/validate", upload.single("file"), async (req, res) => {
 
     const criteriaToCheck = req.body.criteriaToCheck ? JSON.parse(req.body.criteriaToCheck) : null;
     const validationResults = await validateJournal(journal, criteriaToCheck);
-   
+    const AISuggestions = await analyzeWithAI(journal, validationResults);
+
     // Видалення файлу після обробки
     fs.unlinkSync(filePath);
 
-    return res.status(200).json({ validationResults });
+    return res.status(200).json({ validationResults, AISuggestions });
   } catch (error) {
     console.error(error);
 
