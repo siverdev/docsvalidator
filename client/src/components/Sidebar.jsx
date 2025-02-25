@@ -16,7 +16,7 @@ const Sidebar = () => (
                     <span>Перевірка щоденника</span>
                 </NavLink>
             </li>
-            <li>
+            {/* <li>
                 <NavLink 
                     to="/check-arbitrary" 
                     className={({ isActive }) => 
@@ -27,7 +27,7 @@ const Sidebar = () => (
                     <FaFileAlt className="text-blue-500" size={20} />
                     <span>Довільна перевірка</span>
                 </NavLink>
-            </li>
+            </li> */}
         </ul>
     </nav>
 );

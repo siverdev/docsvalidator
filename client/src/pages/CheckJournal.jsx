@@ -56,7 +56,7 @@ const CheckJournal = () => {
                   checked={checkedCriteria[item.id] || false}
                   onChange={() => handleCheckboxChange(item.id)}
                   disabled={index === 0} // Заборона зміни першого чекбокса
-                  className="mr-2 w-5 h-5 cursor-pointer"
+                  className="mr-2 w-4 h-4 cursor-pointer"
                 />
                 <span>{item.title}: {item.description}</span>
               </li>
