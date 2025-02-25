@@ -128,7 +128,7 @@ export const validateJournal = async (journal, criteriaToCheck) => {
 
         if (facultyMatch) {
             const facultySupervisor = facultyMatch[1].trim();
-            const validNames = ["заступник декана Людмила ОМЕЛЬЧУК", "заступник декана Людмила Омельчук"];
+            const validNames = ["заступник декана Людмила ОМЕЛЬЧУК", "заступник декана Людмила Омельчук", "зав. декана Омельчук Людмила Леонідівна"];
 
             validNames.includes(facultySupervisor)
                 ? validationResults[6] = { ...validationResults[6], status: "correct", result: facultySupervisor }
@@ -175,29 +175,54 @@ export const validateJournal = async (journal, criteriaToCheck) => {
     }
 
     //9
-    if(!journal.sections.task){
-        validationResults[9] = {...validationResults[9], status: "error", result: "неможливо зробити перевірку (розділ відсутній)"};
-    }else{
-        //9. Завдання на практику: перевірка наявності завдання на практику
-        const taskText = journal.sections.task.replace(/_+/g, '').trim(); 
-
-        const taskRegex = /Завдання на практику\s*\n([\s\S]*)/i; // текст після "Завдання на практику"
+    if (!journal.sections.task) {
+        validationResults[9] = {
+            ...validationResults[9],
+            status: "error",
+            result: "неможливо зробити перевірку (розділ відсутній)"
+        };
+    } else {
+        // 9. Завдання на практику: перевірка наявності завдання на практику
+        const taskText = journal.sections.task.replace(/_+/g, '').trim();
+    
+        // Вилучаємо лише реальний зміст завдання
+        const taskRegex = /Завдання на практику\s*\n([\s\S]*)/i;
         const taskMatch = taskText.match(taskRegex);
-
+    
         if (taskMatch) {
-            const taskContent = taskMatch[1].trim();
+            let taskContent = taskMatch[1].trim();
+    
+            // Видаляємо службові фрази (підпис, керівник і т.д.)
+            taskContent = taskContent.replace(/Керівник практики.*|\(підпис\).*/gi, '').trim();
+    
             if (taskContent.length === 0) {
-                validationResults[9] = {...validationResults[9], status: "error", result: "завдання не заповнене" };
+                validationResults[9] = {
+                    ...validationResults[9],
+                    status: "error",
+                    result: "завдання не заповнене"
+                };
             } else if (taskContent.startsWith("//")) {
-                validationResults[9] = {...validationResults[9], status: "error", result: "текст завдання є шаблоном (починається з //)" };
+                validationResults[9] = {
+                    ...validationResults[9],
+                    status: "error",
+                    result: "текст завдання є шаблоном (починається з //)"
+                };
             } else {
-                validationResults[9] = {...validationResults[9], status: "correct", result: `${taskContent.substring(0, 100)}...` };
+                validationResults[9] = {
+                    ...validationResults[9],
+                    status: "correct",
+                    result: `${taskContent.substring(0, 100)}...`
+                };
             }
         } else {
-            validationResults[9] = {...validationResults[9], status: "error", result: "розділ 'Завдання на практику' не знайдено" };
+            validationResults[9] = {
+                ...validationResults[9],
+                status: "error",
+                result: "розділ 'Завдання на практику' не знайдено"
+            };
         }
     }
-
+    
     //10
     if(!journal.sections.schedule){
         validationResults[10] = {...validationResults[10], status: "error", result: "неможливо зробити перевірку (розділ відсутній)"};
