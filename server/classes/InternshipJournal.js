@@ -1,9 +1,7 @@
 export default class InternshipJournal {
-    constructor(text) {
+    constructor(text, ownerName) {
       this.text = text;
-      this.validationChecklist =[
-        {title: "Направлення на практику", description: "перевірка наявності ПІБ у називному відмінку"}
-      ]
+      this.ownerName = ownerName;
     }
 
     // Sections: rules, info, assignment, provisions, evaluation, task, schedule, review
